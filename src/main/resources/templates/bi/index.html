@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <meta http-equiv="X-UA-Compatible" content="IE=edge">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <link rel="stylesheet" type="text/css" href="css/bi.css">
+  <link rel="stylesheet" type="text/css" href="css/bootstrap.css">
+  <link rel="stylesheet" type="text/css" href="css/bootstrap-theme.css">
+  <script type="text/javascript" src="js/jquery-1.11.3.min.js"></script>
+  <title>秋棉专家系统</title>
+</head>
+<body class="backgroud">
+  <div class="select-box">
+    <div class="col-sm-4" width="150px" > 
+      <h3>请选择秋眠等级</h3>
+      <div >
+        <select name="select" id="select_k1" class="form-control  selectpicker">
+          <option value="1">等级1</option>
+          <option value="2">等级2</option>
+          <option value="3">等级3</option>
+          <option value="4">等级4</option>
+          <option value="5">等级5</option>
+          <option value="6">等级6</option>
+          <option value="7">等级7</option>
+          <option value="8">等级8</option>
+          <option value="9">等级9</option>
+        </select>
+      </div>
+    </div>  
+    <div class="col-sm-4 col-xs-8 mar-left1">
+      <img id="map" width="880px" height="580px" src="img/slider/1.jpg"/>
+    </div>
+  </div>   
+  <div id="qmjs" class="font-qmjs"></div> 
+  <div id="syzz" class="font-syzz"></div>
+  <div id="kyzz" class="font-kyzz"></div> 
+  <div class="line-centen"></div>
+  <div id="sousuo" class="sousuo">
+    
+    <div class="input-group mar-left2" width="300px" >
+     <input type="text" id="ss" class="form-control" placeholder="请输入苜蓿品种"/>
+   </div>
+   <button id="search" class="btn btn-primary search">查找</button>
+   <h4 id="grade" class="grade"></h4>
+   <div id="syzz2" class="syzz1"></div>
+   <div id="kyzz2" class="kyzz2"></div>
+   
+ </div>
+</div>
+</body>
+<script type="text/javascript">
+  var url = "http://127.0.0.1:8082/bi/"
+  function getData(checkValue){
+    $.ajax({
+      url:url+'getDs',
+      data:{type:checkValue},
+      success:function(data){
+       $("#syzz").html("<h4>适宜种植地区</h4>"+data[0].value1)
+       $("#kyzz").html("<h4>可以种植地区</h4>"+data[0].value2)
+     }
+   })
+
+    $.ajax({
+      url:url+'getDis',
+      data:{type:checkValue},
+      success:function(data){
+        $("#qmjs").html("<h4>秋眠等级为"+data[0].type+"的苜蓿品种有</h4>"+data[0].value)
+      }
+    })
+  }
+
+  getData(1);
+
+  $('#select_k1').change(function () {
+        var checkValue=$("#select_k1").val(); //获取Select选择的Value
+        var src = "img/slider/"+checkValue+".jpg"
+        $('#map').attr("src", src); 
+        getData(checkValue);
+
+      });
+  $('#search').click(function(){
+   var mx1 = $('#ss').val();
+   if(mx1==null||mx1==''){
+    return;
+  }
+  $.ajax({
+
+    type:'post',
+    url:url+'getGrade',
+    data:{mx:mx1},
+    success:function(data){
+     var ck = data[0].type;
+     $("#grade").html("秋棉等级为 "+ck)
+     $.ajax({
+      url:url+'getDs',
+      data:{type:ck},
+      success:function(data){
+       $("#syzz2").html("<h4>适宜种植地区</h4>"+data[0].value1)
+       $("#kyzz2").html("<h4>可以种植地区</h4>"+data[0].value2)
+     }
+   })
+
+   }
+ })
+})
+
+
+</script>
+</html>
